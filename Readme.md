@@ -1,7 +1,7 @@
 # Проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Дмитрий Соловьев](https://up.htmlacademy.ru/ecmascript/13/user/42080).
-* Наставник: `Неизвестно`.
+* Наставник: [Андрей Слесаренко](https://htmlacademy.ru/profile/swen).
 
 ---
 
