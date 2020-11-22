@@ -4,14 +4,33 @@
   "private": true,
   "description": "Проект «Большое путешествие» от HTML Academy",
   "scripts": {
+    "build": "webpack --mode development",
+    "start": "webpack-dev-server --open",
     "eslint": "eslint src/**/*.js",
     "test": "npm run eslint"
   },
   "devDependencies": {
     "eslint": "7.13.0",
-    "eslint-config-htmlacademy": "0.6.0"
+    "eslint-config-htmlacademy": "0.6.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
   },
   "engines": {
     "node": "10"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmptts/42080-big-trip-13.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dmptts/42080-big-trip-13/issues"
+  },
+  "homepage": "https://github.com/dmptts/42080-big-trip-13#readme",
+  "dependencies": {
+    "webpack-dev-server": "^3.11.0"
   }
 }
