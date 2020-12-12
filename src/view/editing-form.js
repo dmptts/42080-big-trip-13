@@ -159,4 +159,4 @@ export const createEditFormTemplate = () => {
       </section>
     </form>
   </li>`;
-}
+};
