@@ -7,6 +7,7 @@ import {createRouteItemListTemplate} from './view/route-item.js';
 import {createRouteItemTemplate} from './view/route-item.js';
 import {createEditFormTemplate} from './view/editing-form.js';
 import {createCreatingFormTemplate} from './view/creating-form.js';
+import {routeItem} from './mock/route-item.js';
 
 const ROUTE_ITEM_COUNT = 3;
 
@@ -42,3 +43,4 @@ for (let i = 0; i < ROUTE_ITEM_COUNT; i++) {
 render(routeItemsList, createCreatingFormTemplate(), `afterbegin`);
 render(routeItemsList, createEditFormTemplate(), `afterbegin`);
 
+console.log(routeItem.time);
