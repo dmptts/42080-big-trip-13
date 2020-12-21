@@ -3,13 +3,15 @@ import {createRouteInfoTemplate} from './view/route.js';
 import {createFilterTemplate} from './view/filter.js';
 import {createRoutePriceTemplate} from './view/price.js';
 import {createSortingFormTemplate} from './view/sorting.js';
-import {createRouteItemListTemplate} from './view/route-item.js';
-import {createRouteItemTemplate} from './view/route-item.js';
+import {createRouteItemListTemplate} from './view/route-point.js';
+import {createRouteItemTemplate} from './view/route-point.js';
 import {createEditFormTemplate} from './view/editing-form.js';
 import {createCreatingFormTemplate} from './view/creating-form.js';
-import {routeItem} from './mock/route-item.js';
+import {generateRoutePoint} from './mock/route-point.js';
 
-const ROUTE_ITEM_COUNT = 3;
+const ROUTE_ITEM_COUNT = 15;
+
+const routePoints = new Array(ROUTE_ITEM_COUNT).fill().map(generateRoutePoint);
 
 const render = (container, markup, place) => {
   container.insertAdjacentHTML(place, markup);
@@ -37,10 +39,8 @@ render(tripEvents, createRouteItemListTemplate(), `beforeend`);
 const routeItemsList = document.querySelector(`.trip-events__list`);
 
 for (let i = 0; i < ROUTE_ITEM_COUNT; i++) {
-  render(routeItemsList, createRouteItemTemplate(), `afterbegin`);
+  render(routeItemsList, createRouteItemTemplate(routePoints[i]), `afterbegin`);
 }
 
 render(routeItemsList, createCreatingFormTemplate(), `afterbegin`);
 render(routeItemsList, createEditFormTemplate(), `afterbegin`);
-
-console.log(routeItem.time);
