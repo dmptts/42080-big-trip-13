@@ -6,7 +6,7 @@ import {createSortingFormTemplate} from './view/sorting.js';
 import {createRouteItemListTemplate} from './view/route-point.js';
 import {createRouteItemTemplate} from './view/route-point.js';
 import {createEditFormTemplate} from './view/editing-form.js';
-import {createCreatingFormTemplate} from './view/creating-form.js';
+// import {createCreatingFormTemplate} from './view/creating-form.js';
 import {generateRoutePoint} from './mock/route-point.js';
 
 const ROUTE_ITEM_COUNT = 15;
@@ -38,9 +38,8 @@ render(tripEvents, createRouteItemListTemplate(), `beforeend`);
 
 const routeItemsList = document.querySelector(`.trip-events__list`);
 
-for (let i = 0; i < ROUTE_ITEM_COUNT; i++) {
+for (let i = 1; i < ROUTE_ITEM_COUNT; i++) {
   render(routeItemsList, createRouteItemTemplate(routePoints[i]), `afterbegin`);
 }
 
-render(routeItemsList, createCreatingFormTemplate(), `afterbegin`);
-render(routeItemsList, createEditFormTemplate(), `afterbegin`);
+render(routeItemsList, createEditFormTemplate(routePoints[0]), `afterbegin`);
