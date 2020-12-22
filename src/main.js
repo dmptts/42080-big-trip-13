@@ -22,7 +22,7 @@ const tripMain = siteHeader.querySelector(`.trip-main`);
 const tripControls = tripMain.querySelector(`.trip-controls`);
 const firstControlsHeader = tripControls.querySelector(`h2:first-child`);
 
-render(tripMain, createRouteInfoTemplate(), `afterbegin`);
+render(tripMain, createRouteInfoTemplate(routePoints), `afterbegin`);
 
 const tripMainInfo = tripMain.querySelector(`.trip-info`);
 

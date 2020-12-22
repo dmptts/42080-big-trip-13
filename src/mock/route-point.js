@@ -27,7 +27,7 @@ const getOptions = () => {
 const getDescription = () => {
   const MAX_QUANTITY = 5;
   const quantity = getRandomInt(1, MAX_QUANTITY);
-  const sentences = ROUTE_POINT_DESCRIPTION_SENTENCES.splice();
+  const sentences = ROUTE_POINT_DESCRIPTION_SENTENCES.slice();
 
   let description = ``;
 
