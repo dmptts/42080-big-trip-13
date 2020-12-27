@@ -41,7 +41,7 @@ const siteHeader = document.querySelector(`.page-header`);
 const tripMain = siteHeader.querySelector(`.trip-main`);
 const tripControls = tripMain.querySelector(`.trip-controls`);
 const firstControlsHeader = tripControls.querySelector(`h2:first-child`);
-const routeComponent = new RouteView();
+const routeComponent = new RouteView(routePoints);
 render(tripMain, routeComponent.getElem(), RenderPosition.AFTERBEGIN);
 render(routeComponent.getElem(), new RoutePriceView().getElem(), RenderPosition.BEFOREEND);
 render(firstControlsHeader, new MenuView().getElem(), RenderPosition.AFTER);
