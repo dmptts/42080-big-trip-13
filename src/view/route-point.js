@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {createElement} from '../utils.js';
 
 const getDuration = (times) => {
   const duration = dayjs(times.endTime).diff(times.startTime, `minute`);
@@ -30,12 +31,7 @@ const createSelectedOptionsTemplate = (options) => {
   </ul>` : ``;
 };
 
-export const createRouteItemListTemplate = () => {
-  return `<ul class="trip-events__list">
-  </ul>`;
-};
-
-export const createRouteItemTemplate = (routePoint) => {
+const createRoutePointTemplate = (routePoint) => {
   const {type, destination, options, times, price, isFavorite} = routePoint;
 
   const selectedOptionsTemplate = createSelectedOptionsTemplate(options);
@@ -74,3 +70,26 @@ export const createRouteItemTemplate = (routePoint) => {
     </div>
   </li>`;
 };
+
+export default class RoutePoint {
+  constructor(routePoint) {
+    this._routePoint = routePoint;
+    this._elem = null;
+  }
+
+  getTemplate() {
+    return createRoutePointTemplate(this._routePoint);
+  }
+
+  getElem() {
+    if (!this._elem) {
+      this._elem = createElement(this.getTemplate());
+    }
+
+    return this._elem;
+  }
+
+  removeElem() {
+    this._elem = null;
+  }
+}

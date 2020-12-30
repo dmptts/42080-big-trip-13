@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import {getRandomInt} from '../utils.js';
 import {ROUTE_POINT_TYPES, ROUTE_POINT_DESTINATIONS} from '../const';
+import {createElement} from '../utils.js';
 
 const createRoutePointTypeSelectorTemplate = (routePointType) => {
   return `<div class="event__type-wrapper">
@@ -66,7 +67,7 @@ const createRoutePointPhotosTemplate = (routePointPhotos) => {
   </div>` : ``;
 };
 
-export const createEditFormTemplate = (routePoint = {}) => {
+const createEditFormTemplate = (routePoint = {}) => {
   const {type, destination, times, price, options, description, photos} = routePoint;
 
   return `<li class="trip-events__item">
@@ -115,3 +116,26 @@ export const createEditFormTemplate = (routePoint = {}) => {
     </form>
   </li>`;
 };
+
+export default class RoutePointEditForm {
+  constructor(routePoint = {}) {
+    this._routePoint = routePoint;
+    this._elem = null;
+  }
+
+  getTemplate() {
+    return createEditFormTemplate(this._routePoint);
+  }
+
+  getElem() {
+    if (!this._elem) {
+      this._elem = createElement(this.getTemplate());
+    }
+
+    return this._elem;
+  }
+
+  removeElem() {
+    this._elem = null;
+  }
+}
