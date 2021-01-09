@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
-import {getRandomInt} from '../utils.js';
+import Abstract from './abstract.js';
+import {getRandomInt} from '../utils/common.js';
 import {ROUTE_POINT_TYPES, ROUTE_POINT_DESTINATIONS} from '../const';
-import {createElement} from '../utils.js';
 
 const createRoutePointTypeSelectorTemplate = (routePointType) => {
   return `<div class="event__type-wrapper">
@@ -117,25 +117,24 @@ const createEditFormTemplate = (routePoint = {}) => {
   </li>`;
 };
 
-export default class RoutePointEditForm {
+export default class RoutePointEditForm extends Abstract {
   constructor(routePoint = {}) {
+    super();
     this._routePoint = routePoint;
-    this._elem = null;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   getTemplate() {
     return createEditFormTemplate(this._routePoint);
   }
 
-  getElem() {
-    if (!this._elem) {
-      this._elem = createElement(this.getTemplate());
-    }
-
-    return this._elem;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._handlers.formSubmit();
   }
 
-  removeElem() {
-    this._elem = null;
+  setFormSubmitHandler(handler) {
+    this._handlers.formSubmit = handler;
+    this.getElem().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 }

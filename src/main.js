@@ -7,7 +7,7 @@ import RoutePointListView from './view/route-point-list.js';
 import RoutePointView from './view/route-point.js';
 import RoutePointEditFormView from './view/editing-form.js';
 import {generateRoutePoint} from './mock/route-point.js';
-import {render, RenderPosition} from './utils.js';
+import {render, RenderPosition} from './utils/render.js';
 
 const ROUTE_ITEM_COUNT = 15;
 
@@ -25,12 +25,11 @@ const renderRoutePoint = (routePoint) => {
     routePointListComponent.getElem().replaceChild(routePointComponent.getElem(), routePointEditFormComponent.getElem());
   };
 
-  routePointComponent.getElem().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+  routePointComponent.setClickHandler(() => {
     replaceCardToForm();
   });
 
-  routePointEditFormComponent.getElem().querySelector(`form`).addEventListener(`submit`, (evt) => {
-    evt.preventDefault();
+  routePointEditFormComponent.setFormSubmitHandler(() => {
     replaceFormToCard();
   });
 

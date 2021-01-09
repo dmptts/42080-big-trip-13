@@ -1,4 +1,4 @@
-import {createElement} from '../utils.js';
+import Abstract from './abstract.js';
 
 const createRoutePriceTemplate = () => {
   return `<p class="trip-info__cost">
@@ -6,24 +6,8 @@ const createRoutePriceTemplate = () => {
   </p>`;
 };
 
-export default class RoutePrice {
-  constructor() {
-    this._elem = null;
-  }
-
+export default class RoutePrice extends Abstract {
   getTemplate() {
     return createRoutePriceTemplate();
-  }
-
-  getElem() {
-    if (!this._elem) {
-      this._elem = createElement(this.getTemplate());
-    }
-
-    return this._elem;
-  }
-
-  removeElem() {
-    this._elem = null;
   }
 }
