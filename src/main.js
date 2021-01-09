@@ -41,17 +41,17 @@ const tripMain = siteHeader.querySelector(`.trip-main`);
 const tripControls = tripMain.querySelector(`.trip-controls`);
 const firstControlsHeader = tripControls.querySelector(`h2:first-child`);
 const routeComponent = new RouteView(routePoints);
-render(tripMain, routeComponent.getElem(), RenderPosition.AFTERBEGIN);
-render(routeComponent.getElem(), new RoutePriceView().getElem(), RenderPosition.BEFOREEND);
-render(firstControlsHeader, new MenuView().getElem(), RenderPosition.AFTER);
-render(tripControls, new FilterView().getElem(), RenderPosition.BEFOREEND);
+render(tripMain, routeComponent, RenderPosition.AFTERBEGIN);
+render(routeComponent, new RoutePriceView(), RenderPosition.BEFOREEND);
+render(firstControlsHeader, new MenuView(), RenderPosition.AFTER);
+render(tripControls, new FilterView(), RenderPosition.BEFOREEND);
 
 const pageMain = document.querySelector(`.page-main`);
 const tripEvents = pageMain.querySelector(`.trip-events`);
 const routePointListComponent = new RoutePointListView();
 
-render(tripEvents, new SortingFormView().getElem(), RenderPosition.BEFOREEND);
-render(tripEvents, routePointListComponent.getElem(), RenderPosition.BEFOREEND);
+render(tripEvents, new SortingFormView(), RenderPosition.BEFOREEND);
+render(tripEvents, routePointListComponent, RenderPosition.BEFOREEND);
 
 for (let i = 0; i < ROUTE_ITEM_COUNT; i++) {
   renderRoutePoint(routePoints[i]);
