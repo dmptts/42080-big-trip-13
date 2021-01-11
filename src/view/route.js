@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {createElement} from '../utils.js';
+import Abstract from './abstract.js';
 
 const getDestinationsString = (routePoints) => {
   const routeDestinations = routePoints.map((routePoint) => routePoint.destination);
@@ -28,25 +28,13 @@ const createRouteTemplate = (routePoints) => {
   </section>`;
 };
 
-export default class Route {
+export default class Route extends Abstract {
   constructor(routePoints = null) {
+    super();
     this._routePoints = routePoints;
-    this._elem = null;
   }
 
   getTemplate() {
     return createRouteTemplate(this._routePoints);
-  }
-
-  getElem() {
-    if (!this._elem) {
-      this._elem = createElement(this.getTemplate());
-    }
-
-    return this._elem;
-  }
-
-  removeElem() {
-    this._elem = null;
   }
 }

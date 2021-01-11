@@ -1,3 +1,5 @@
+import Abstract from "../view/abstract";
+
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
@@ -5,6 +7,14 @@ export const RenderPosition = {
 };
 
 export const render = (targetNode, element, place) => {
+  if (targetNode instanceof Abstract) {
+    targetNode = targetNode.getElem();
+  }
+
+  if (element instanceof Abstract) {
+    element = element.getElem();
+  }
+
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       targetNode.prepend(element);
@@ -16,17 +26,4 @@ export const render = (targetNode, element, place) => {
       targetNode.after(element);
       break;
   }
-};
-
-export const getRandomInt = (a = 1, b = 0) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
-export const createElement = (template) => {
-  const newElement = document.createElement(`div`);
-  newElement.innerHTML = template;
-
-  return newElement.firstChild;
 };

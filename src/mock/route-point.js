@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {getRandomInt} from '../utils.js';
+import {getRandomInt} from '../utils/common.js';
 import {ROUTE_POINT_TYPES, ROUTE_POINT_DESTINATIONS, ROUTE_POINT_OPTION_NAMES, ROUTE_POINT_DESCRIPTION_SENTENCES, ROUTE_POINT_PHOTO_PLACEHOLDER} from '../const.js';
 
 const getOptions = () => {
