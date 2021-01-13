@@ -4,8 +4,7 @@ import FilterView from '../view/filter.js';
 import RoutePriceView from '../view/price.js';
 import SortingFormView from '../view/sorting.js';
 import RoutePointListView from '../view/route-point-list.js';
-import RoutePointView from '../view/route-point.js';
-import RoutePointEditFormView from '../view/editing-form.js';
+import RoutePointPresenter from './route-point.js';
 import {render, RenderPosition} from '../utils/render.js';
 
 const ROUTE_ITEM_COUNT = 15;
@@ -19,14 +18,13 @@ export default class Route {
     this._filterComponent = new FilterView();
     this._sortingComponent = new SortingFormView();
     this._routePointListComponent = new RoutePointListView();
-    this._routePointComponent = new RoutePointView();
-    this._routePointEditFormComponent = new RoutePointEditFormView();
   }
 
   init(routePoints) {
     this._routePoints = routePoints.slice();
 
     this.renderRouteMainInfo(this._routePoints);
+    this.renderSorting();
     this.renderRoutePointList(this._routePoints);
   }
 
@@ -55,40 +53,20 @@ export default class Route {
     render(this._routeMainInfoContainer.querySelector(`.trip-controls`), this._filterComponent, RenderPosition.BEFOREEND);
   }
 
-  renderSorting() {
-    render(this._routeEventsContainer, this._sortingComponent, RenderPosition.BEFOREEND);
-  }
-
   renderRoutePointList(routePoints) {
     render(this._routeEventsContainer, this._routePointListComponent, RenderPosition.BEFOREEND);
-
-    this.renderSorting();
 
     for (let i = 0; i < ROUTE_ITEM_COUNT; i++) {
       this.renderRoutePoint(routePoints[i]);
     }
   }
 
+  renderSorting() {
+    render(this._routeEventsContainer, this._sortingComponent, RenderPosition.BEFOREEND);
+  }
+
   renderRoutePoint(routePoint) {
-    const routePointComponent = new RoutePointView(routePoint);
-    const routePointEditFormComponent = new RoutePointEditFormView(routePoint);
-
-    const replaceCardToForm = () => {
-      this._routePointListComponent.getElem().replaceChild(routePointEditFormComponent.getElem(), routePointComponent.getElem());
-    };
-
-    const replaceFormToCard = () => {
-      this._routePointListComponent.getElem().replaceChild(routePointComponent.getElem(), routePointEditFormComponent.getElem());
-    };
-
-    routePointComponent.setClickHandler(() => {
-      replaceCardToForm();
-    });
-
-    routePointEditFormComponent.setFormSubmitHandler(() => {
-      replaceFormToCard();
-    });
-
-    render(this._routePointListComponent, routePointComponent.getElem(), RenderPosition.BEFOREEND);
+    const routePointPresenter = new RoutePointPresenter(this._routePointListComponent);
+    routePointPresenter.init(routePoint);
   }
 }

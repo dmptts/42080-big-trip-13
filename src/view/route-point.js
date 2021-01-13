@@ -87,7 +87,7 @@ export default class RoutePoint extends Abstract {
     this._handlers.click();
   }
 
-  setClickHandler(handler) {
+  setDropdownClickHandler(handler) {
     this._handlers.click = handler;
     this.getElem().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
   }
