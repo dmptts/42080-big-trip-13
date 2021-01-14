@@ -27,3 +27,30 @@ export const render = (targetNode, element, place) => {
       break;
   }
 };
+
+export const replace = (newNode, oldNode) => {
+  if (oldNode instanceof Abstract) {
+    oldNode = oldNode.getElem();
+  }
+
+  if (newNode instanceof Abstract) {
+    newNode = newNode.getElem();
+  }
+
+  const parent = oldNode.parentElement;
+
+  if (oldNode === null || newNode === null || parent === null) {
+    throw new Error(`Can't replace existing elements`);
+  }
+
+  parent.replaceChild(newNode, oldNode);
+};
+
+export const remove = (component) => {
+  if (!(component instanceof Abstract)) {
+    throw new Error(`Can remove only components`);
+  }
+
+  component.getElement().remove();
+  component.removeElement();
+};
