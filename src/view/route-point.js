@@ -75,20 +75,31 @@ export default class RoutePoint extends Abstract {
   constructor(routePoint) {
     super();
     this._routePoint = routePoint;
-    this._clickHandler = this._clickHandler.bind(this);
+    this._rollupClickHandler = this._rollupClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
     return createRoutePointTemplate(this._routePoint);
   }
 
-  _clickHandler(evt) {
+  _rollupClickHandler(evt) {
     evt.preventDefault();
-    this._handlers.click();
+    this._handlers.rollupClick();
   }
 
-  setDropdownClickHandler(handler) {
-    this._handlers.click = handler;
-    this.getElem().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._handlers.favoriteClick();
+  }
+
+  setRollupClickHandler(handler) {
+    this._handlers.rollupClick = handler;
+    this.getElem().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollupClickHandler);
+  }
+
+  setFavoriteClickHandler(handler) {
+    this._handlers.favoriteClick = handler;
+    this.getElem().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteClickHandler);
   }
 }

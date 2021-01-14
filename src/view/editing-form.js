@@ -130,7 +130,7 @@ export default class RoutePointEditForm extends Abstract {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._handlers.formSubmit();
+    this._handlers.formSubmit(this._routePoint);
   }
 
   setFormSubmitHandler(handler) {
