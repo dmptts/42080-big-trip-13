@@ -1,26 +1,23 @@
 import dayjs from 'dayjs';
 import {getRandomInt} from '../utils/common.js';
-import {ROUTE_POINT_TYPES, ROUTE_POINT_DESTINATIONS, ROUTE_POINT_OPTION_NAMES, ROUTE_POINT_DESCRIPTION_SENTENCES, ROUTE_POINT_PHOTO_PLACEHOLDER} from '../const.js';
+import {ROUTE_POINT_TYPES, ROUTE_POINT_DESTINATIONS, ROUTE_POINT_OPTIONS, ROUTE_POINT_DESCRIPTION_SENTENCES, ROUTE_POINT_PHOTO_PLACEHOLDER} from '../const.js';
 
 const getId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
-const getOptions = () => {
-  const MAX_OPTIONS_QUANTITY = 5;
-  const quantity = getRandomInt(0, MAX_OPTIONS_QUANTITY);
-  const optionNames = ROUTE_POINT_OPTION_NAMES.slice();
+const getOptions = (type) => {
   const options = [];
+  const randomPrice = getRandomInt(0, 20) * 5;
 
-  for (let i = 1; i <= quantity; i++) {
-    const randomIndex = getRandomInt(0, optionNames.length - 1);
-    const randomPrice = getRandomInt(0, 100) * 5;
-    options.push(
-        {
-          optionName: optionNames[randomIndex],
-          optionPrice: randomPrice,
-          isSelected: Boolean(getRandomInt(0, 1))
-        }
-    );
-    optionNames.splice(randomIndex, 1);
+  for (let i = 0; i < ROUTE_POINT_OPTIONS.length; i++) {
+    if (ROUTE_POINT_OPTIONS[i].forTypes.indexOf(type) !== -1) {
+      options.push(
+          {
+            optionName: ROUTE_POINT_OPTIONS[i].name,
+            optionPrice: randomPrice,
+            isSelected: Boolean(getRandomInt(0, 1))
+          }
+      );
+    }
   }
 
   return options;
@@ -68,11 +65,13 @@ const getTimes = () => {
 };
 
 export const generateRoutePoint = () => {
+  const type = ROUTE_POINT_TYPES[getRandomInt(0, ROUTE_POINT_TYPES.length - 1)];
+
   return {
     id: getId(),
-    type: ROUTE_POINT_TYPES[getRandomInt(0, ROUTE_POINT_TYPES.length - 1)],
+    type,
     destination: ROUTE_POINT_DESTINATIONS[getRandomInt(0, ROUTE_POINT_DESTINATIONS.length - 1)],
-    options: getOptions(),
+    options: getOptions(type),
     description: getDescription(),
     photos: getPhotos(),
     times: getTimes(),
