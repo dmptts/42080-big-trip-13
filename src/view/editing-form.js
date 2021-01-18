@@ -1,7 +1,12 @@
 import dayjs from 'dayjs';
-import Abstract from './abstract.js';
+import SmartView from './smart.js';
 import {getRandomInt} from '../utils/common.js';
-import {ROUTE_POINT_TYPES, ROUTE_POINT_DESTINATIONS} from '../const';
+import {ROUTE_POINT_TYPES, ROUTE_POINT_DESTINATIONS} from '../const.js';
+import {getDescription, getOptions, getPhotos} from '../mock/route-point.js';
+
+const BLANK_ROUTE_POINT = {
+  // TODO: Добавить пустой шаблон задачи
+};
 
 const createRoutePointTypeSelectorTemplate = (routePointType) => {
   return `<div class="event__type-wrapper">
@@ -16,7 +21,7 @@ const createRoutePointTypeSelectorTemplate = (routePointType) => {
         <legend class="visually-hidden">Event type</legend>
 
         ${ROUTE_POINT_TYPES.map((type) => `<div class="event__type-item">
-          <input id="event-type-${type.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type.toLowerCase()}"${(type === routePointType) ? ` checked` : ``}>
+          <input id="event-type-${type.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type.toLowerCase()}"${type === routePointType ? ` checked` : ``}>
           <label class="event__type-label  event__type-label--${type.toLowerCase()}" for="event-type-${type.toLowerCase()}-1">${type}</label>
         </div>`).join(``)}
       </fieldset>
@@ -117,24 +122,88 @@ const createEditFormTemplate = (routePoint = {}) => {
   </li>`;
 };
 
-export default class RoutePointEditForm extends Abstract {
-  constructor(routePoint = {}) {
+export default class RoutePointEditForm extends SmartView {
+  constructor(routePoint = BLANK_ROUTE_POINT) {
     super();
-    this._routePoint = routePoint;
+    this._data = RoutePointEditForm.parseRoutePointToData(routePoint);
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._typeCheckboxClicktHandler = this._typeCheckboxClicktHandler.bind(this);
+    this._destinationInputChange = this._destinationInputChange.bind(this);
+
+    this._setInnerHandlers();
+  }
+
+  reset(routePoint) {
+    this.updateData(
+        RoutePointEditForm.parseRoutePointToData(routePoint)
+    );
   }
 
   getTemplate() {
-    return createEditFormTemplate(this._routePoint);
+    return createEditFormTemplate(this._data);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._handlers.formSubmit(this._routePoint);
+    this._handlers.formSubmit(RoutePointEditForm.parseDataToRoutePoint(this._data));
   }
 
   setFormSubmitHandler(handler) {
     this._handlers.formSubmit = handler;
     this.getElem().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  _typeCheckboxClicktHandler(evt) {
+    evt.preventDefault();
+    evt.target.closest(`.event__type-item`).querySelector(`input[type='radio']`).checked = true;
+
+    const typeToggle = this.getElem().querySelector(`.event__type-toggle`);
+    let type = this.getElem().querySelector(`.event__type-input:checked`).value;
+
+    type = type[0].toUpperCase() + type.slice(1);
+
+    typeToggle.checked = !typeToggle.checked;
+
+    this.updateData({
+      type,
+      options: getOptions(type)
+    });
+  }
+
+  _destinationInputChange(evt) {
+    evt.preventDefault();
+
+    if (ROUTE_POINT_DESTINATIONS.indexOf(evt.target.value) === -1) {
+      evt.target.value = ``;
+    }
+
+    this.updateData({
+      destination: evt.target.value,
+      description: getDescription(),
+      photos: getPhotos()
+    });
+  }
+
+  _setInnerHandlers() {
+    this.getElem().querySelector(`.event__type-list`).addEventListener(`click`, this._typeCheckboxClicktHandler);
+    this.getElem().querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationInputChange);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._handlers.formSubmit);
+  }
+
+  static parseRoutePointToData(routePoint) {
+    return Object.assign(
+        {},
+        routePoint,
+        {}
+    );
+  }
+
+  static parseDataToRoutePoint(data) {
+    return Object.assign({}, data);
   }
 }

@@ -86,11 +86,4 @@ export default class Route {
     routePointPresenter.init(routePoint);
     this._routePointPresenter[routePoint.id] = routePointPresenter;
   }
-
-  // _clearRouteItems() {
-  //   Object
-  //     .values(this._routePointPresenter)
-  //     .forEach((presenter) => presenter.destroy());
-  //   this._taskPresenter = {};
-  // }
 }

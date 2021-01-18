@@ -4,7 +4,7 @@ import {ROUTE_POINT_TYPES, ROUTE_POINT_DESTINATIONS, ROUTE_POINT_OPTIONS, ROUTE_
 
 const getId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
-const getOptions = (type) => {
+export const getOptions = (type) => {
   const options = [];
   const randomPrice = getRandomInt(0, 20) * 5;
 
@@ -23,7 +23,7 @@ const getOptions = (type) => {
   return options;
 };
 
-const getDescription = () => {
+export const getDescription = () => {
   const MAX_QUANTITY = 5;
   const quantity = getRandomInt(1, MAX_QUANTITY);
   const sentences = ROUTE_POINT_DESCRIPTION_SENTENCES.slice();
@@ -39,7 +39,7 @@ const getDescription = () => {
   return description;
 };
 
-const getPhotos = () => {
+export const getPhotos = () => {
   const MAX_QUANTITY = 4;
   const quantity = getRandomInt(1, MAX_QUANTITY);
   const link = ROUTE_POINT_PHOTO_PLACEHOLDER;
