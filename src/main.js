@@ -1,58 +1,13 @@
-import MenuView from './view/menu.js';
-import RouteView from './view/route.js';
-import FilterView from './view/filter.js';
-import RoutePriceView from './view/price.js';
-import SortingFormView from './view/sorting.js';
-import RoutePointListView from './view/route-point-list.js';
-import RoutePointView from './view/route-point.js';
-import RoutePointEditFormView from './view/editing-form.js';
 import {generateRoutePoint} from './mock/route-point.js';
-import {render, RenderPosition} from './utils/render.js';
+import RoutePresenter from './presenters/route.js';
 
 const ROUTE_ITEM_COUNT = 15;
 
+const routeMainInfoElement = document.querySelector(`.trip-main`);
+const routeEventsElement = document.querySelector(`.trip-events`);
+
 const routePoints = new Array(ROUTE_ITEM_COUNT).fill().map(generateRoutePoint);
+const routePresenter = new RoutePresenter(routeMainInfoElement, routeEventsElement);
 
-const renderRoutePoint = (routePoint) => {
-  const routePointComponent = new RoutePointView(routePoint);
-  const routePointEditFormComponent = new RoutePointEditFormView(routePoint);
+routePresenter.init(routePoints);
 
-  const replaceCardToForm = () => {
-    routePointListComponent.getElem().replaceChild(routePointEditFormComponent.getElem(), routePointComponent.getElem());
-  };
-
-  const replaceFormToCard = () => {
-    routePointListComponent.getElem().replaceChild(routePointComponent.getElem(), routePointEditFormComponent.getElem());
-  };
-
-  routePointComponent.setClickHandler(() => {
-    replaceCardToForm();
-  });
-
-  routePointEditFormComponent.setFormSubmitHandler(() => {
-    replaceFormToCard();
-  });
-
-  render(routePointListComponent.getElem(), routePointComponent.getElem(), RenderPosition.BEFOREEND);
-};
-
-const siteHeader = document.querySelector(`.page-header`);
-const tripMain = siteHeader.querySelector(`.trip-main`);
-const tripControls = tripMain.querySelector(`.trip-controls`);
-const firstControlsHeader = tripControls.querySelector(`h2:first-child`);
-const routeComponent = new RouteView(routePoints);
-render(tripMain, routeComponent, RenderPosition.AFTERBEGIN);
-render(routeComponent, new RoutePriceView(), RenderPosition.BEFOREEND);
-render(firstControlsHeader, new MenuView(), RenderPosition.AFTER);
-render(tripControls, new FilterView(), RenderPosition.BEFOREEND);
-
-const pageMain = document.querySelector(`.page-main`);
-const tripEvents = pageMain.querySelector(`.trip-events`);
-const routePointListComponent = new RoutePointListView();
-
-render(tripEvents, new SortingFormView(), RenderPosition.BEFOREEND);
-render(tripEvents, routePointListComponent, RenderPosition.BEFOREEND);
-
-for (let i = 0; i < ROUTE_ITEM_COUNT; i++) {
-  renderRoutePoint(routePoints[i]);
-}

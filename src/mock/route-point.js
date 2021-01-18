@@ -2,6 +2,8 @@ import dayjs from 'dayjs';
 import {getRandomInt} from '../utils/common.js';
 import {ROUTE_POINT_TYPES, ROUTE_POINT_DESTINATIONS, ROUTE_POINT_OPTION_NAMES, ROUTE_POINT_DESCRIPTION_SENTENCES, ROUTE_POINT_PHOTO_PLACEHOLDER} from '../const.js';
 
+const getId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 const getOptions = () => {
   const MAX_OPTIONS_QUANTITY = 5;
   const quantity = getRandomInt(0, MAX_OPTIONS_QUANTITY);
@@ -67,6 +69,7 @@ const getTimes = () => {
 
 export const generateRoutePoint = () => {
   return {
+    id: getId(),
     type: ROUTE_POINT_TYPES[getRandomInt(0, ROUTE_POINT_TYPES.length - 1)],
     destination: ROUTE_POINT_DESTINATIONS[getRandomInt(0, ROUTE_POINT_DESTINATIONS.length - 1)],
     options: getOptions(),
