@@ -20,6 +20,7 @@ export default class RoutePoint {
     this._handleRollupClick = this._handleRollupClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
   init(routePoint) {
@@ -67,12 +68,14 @@ export default class RoutePoint {
 
   _replaceCardToForm() {
     replace(this._routePointEditFormComponent, this._routePointComponent);
+    document.addEventListener(`keydown`, this._escKeyDownHandler);
     this._changeMode();
     this._mode = Mode.EDITING;
   }
 
   _replaceFormToCard() {
     replace(this._routePointComponent, this._routePointEditFormComponent);
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
     this._mode = Mode.DEFAULT;
   }
 
@@ -88,6 +91,14 @@ export default class RoutePoint {
             {isFavorite: !this._routePoint.isFavorite}
         )
     );
+  }
+
+  _escKeyDownHandler(evt) {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      evt.preventDefault();
+      this._routePointEditFormComponent.reset(this._task);
+      this._replaceFormToCard();
+    }
   }
 
   _handleFormSubmit(routePoint) {
