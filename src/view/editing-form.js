@@ -130,6 +130,7 @@ export default class RoutePointEditForm extends SmartView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._typeCheckboxClicktHandler = this._typeCheckboxClicktHandler.bind(this);
     this._destinationInputChange = this._destinationInputChange.bind(this);
+    this._rollupClickHandler = this._rollupClickHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -149,9 +150,19 @@ export default class RoutePointEditForm extends SmartView {
     this._handlers.formSubmit(RoutePointEditForm.parseDataToRoutePoint(this._data));
   }
 
+  _rollupClickHandler(evt) {
+    evt.preventDefault();
+    this._handlers.rollupClick();
+  }
+
   setFormSubmitHandler(handler) {
     this._handlers.formSubmit = handler;
     this.getElem().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setRollupClickHandler(handler) {
+    this._handlers.rollupClick = handler;
+    this.getElem().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollupClickHandler);
   }
 
   _typeCheckboxClicktHandler(evt) {

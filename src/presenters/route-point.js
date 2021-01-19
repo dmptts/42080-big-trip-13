@@ -34,6 +34,7 @@ export default class RoutePoint {
 
     this._routePointComponent.setRollupClickHandler(this._handleRollupClick);
     this._routePointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._routePointEditFormComponent.setRollupClickHandler(this._handleRollupClick);
     this._routePointEditFormComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     if (prevRoutePointComponent === null || prevRoutePointEditFormComponent === null) {
@@ -80,7 +81,14 @@ export default class RoutePoint {
   }
 
   _handleRollupClick() {
-    this._replaceCardToForm();
+    if (this._mode === Mode.DEFAULT) {
+      this._replaceCardToForm();
+      return;
+    }
+
+    if (this._mode === Mode.EDITING) {
+      this._replaceFormToCard();
+    }
   }
 
   _handleFavoriteClick() {
