@@ -1,6 +1,7 @@
 import RoutePointView from '../view/route-point.js';
 import RoutePointEditFormView from '../view/editing-form.js';
 import {render, replace, remove, RenderPosition} from '../utils/render.js';
+import {UpdateType} from '../const.js';
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -93,6 +94,7 @@ export default class RoutePoint {
 
   _handleFavoriteClick() {
     this._changeData(
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._routePoint,
@@ -110,7 +112,7 @@ export default class RoutePoint {
   }
 
   _handleFormSubmit(routePoint) {
-    this._changeData(routePoint);
+    this._changeData(UpdateType.MINOR, routePoint);
     this._replaceFormToCard();
   }
 }

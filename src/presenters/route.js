@@ -6,8 +6,8 @@ import SortingFormView from '../view/sorting.js';
 import RoutePointListView from '../view/route-point-list.js';
 import NoRoutePointView from '../view/no-route-point.js';
 import RoutePointPresenter from './route-point.js';
-import {updateItem} from '../utils/common.js';
 import {render, RenderPosition} from '../utils/render.js';
+import {UpdateType} from '../const.js';
 
 export default class Route {
   constructor(routeMainInfoContainer, routeEventsContainer, routePointsModel) {
@@ -22,8 +22,11 @@ export default class Route {
     this._routePointListComponent = new RoutePointListView();
     this._noTaskComponent = new NoRoutePointView();
 
-    this._handleRoutePointChange = this._handleRoutePointChange.bind(this);
+    this._handleViewChange = this._handleViewChange.bind(this);
+    this._handleModelChange = this._handleModelChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+
+    this._routePointsModel.addObserver(this._handleModelChange);
   }
 
   init() {
@@ -34,9 +37,20 @@ export default class Route {
     return this._routePointsModel.getRoutePoints();
   }
 
-  _handleRoutePointChange(updatedRoutePoint) {
-    this._routePoints = updateItem(this._routePoints, updatedRoutePoint);
-    this._routePointPresenter[updatedRoutePoint.id].init(updatedRoutePoint);
+  _handleViewChange(updateType, update) {
+    this._routePointsModel.updateRoutePoint(updateType, update);
+  }
+
+  _handleModelChange(updateType, data) {
+    switch (updateType) {
+      case UpdateType.MINOR:
+        // Обновить точку маршрута
+        this._routePointPresenter[data.id].init(data);
+        break;
+      case UpdateType.MAJOR:
+        // Обновить весь маршрут
+        break;
+    }
   }
 
   _handleModeChange() {
@@ -101,7 +115,7 @@ export default class Route {
   }
 
   _renderRoutePoint(routePoint) {
-    const routePointPresenter = new RoutePointPresenter(this._routePointListComponent, this._handleRoutePointChange, this._handleModeChange);
+    const routePointPresenter = new RoutePointPresenter(this._routePointListComponent, this._handleViewChange, this._handleModeChange);
     routePointPresenter.init(routePoint);
     this._routePointPresenter[routePoint.id] = routePointPresenter;
   }

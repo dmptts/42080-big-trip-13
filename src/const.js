@@ -58,3 +58,8 @@ export const ROUTE_POINT_DESCRIPTION_SENTENCES = [
 ];
 
 export const ROUTE_POINT_PHOTO_PLACEHOLDER = `http://picsum.photos/248/152?r=`;
+
+export const UpdateType = {
+  MINOR: `MINOR`,
+  MAJOR: `MAJOR`
+};
