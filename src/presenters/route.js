@@ -10,10 +10,11 @@ import {updateItem} from '../utils/common.js';
 import {render, RenderPosition} from '../utils/render.js';
 
 export default class Route {
-  constructor(routeMainInfoContainer, routeEventsContainer) {
+  constructor(routeMainInfoContainer, routeEventsContainer, routePointsModel) {
     this._routeMainInfoContainer = routeMainInfoContainer;
     this._routeEventsContainer = routeEventsContainer;
     this._routePointPresenter = {};
+    this._routePointsModel = routePointsModel;
 
     this._menuComponent = new MenuView();
     this._filterComponent = new FilterView();
@@ -25,18 +26,12 @@ export default class Route {
     this._handleModeChange = this._handleModeChange.bind(this);
   }
 
-  init(routePoints) {
-    this._routePoints = routePoints.slice();
+  init() {
+    this._renderRoute();
+  }
 
-    this._renderRouteMainInfo(this._routePoints);
-    this._renderSorting();
-
-    if (this._routePoints.length === 0) {
-      this._renderNoRoutePoint();
-      return;
-    }
-
-    this._renderRoutePointList(this._routePoints);
+  _getRoutePoints() {
+    return this._routePointsModel.getRoutePoints();
   }
 
   _handleRoutePointChange(updatedRoutePoint) {
@@ -48,6 +43,20 @@ export default class Route {
     Object
       .values(this._routePointPresenter)
       .forEach((presenter) => presenter.resetView());
+  }
+
+  _renderRoute() {
+    const routePoints = this._getRoutePoints();
+
+    this._renderRouteMainInfo(routePoints);
+    this._renderSorting();
+
+    if (routePoints.length === 0) {
+      this._renderNoRoutePoint();
+      return;
+    }
+
+    this._renderRoutePointList(routePoints);
   }
 
   _renderRouteMainInfo(routePoints) {
@@ -78,7 +87,7 @@ export default class Route {
   _renderRoutePointList(routePoints) {
     render(this._routeEventsContainer, this._routePointListComponent, RenderPosition.BEFOREEND);
 
-    for (let i = 0; i < this._routePoints.length; i++) {
+    for (let i = 0; i < routePoints.length; i++) {
       this._renderRoutePoint(routePoints[i]);
     }
   }
