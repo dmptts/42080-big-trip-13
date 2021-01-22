@@ -90,7 +90,8 @@ export default class RoutePoint {
     );
   }
 
-  _handleFormSubmit() {
+  _handleFormSubmit(routePoint) {
+    this._changeData(routePoint);
     this._replaceFormToCard();
   }
 }

@@ -2,17 +2,47 @@ export const ROUTE_POINT_TYPES = [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `
 
 export const ROUTE_POINT_DESTINATIONS = [`Amsterdam`, `Chamonix`, `Geneva`, `London`, `Reykjavik`, `Tokio`, `Paris`, `Los Angeles`];
 
-export const ROUTE_POINT_OPTION_NAMES = [
-  `Order Uber`,
-  `Add luggage`,
-  `Switch to comfort class`,
-  `Add meal`,
-  `Choose seats`,
-  `Travel by train`,
-  `Rent a car`,
-  `Add breakfest`,
-  `Book Tickets`,
-  `Lunch in city`
+export const ROUTE_POINT_OPTIONS = [
+  {
+    name: `Order Uber`,
+    forTypes: [`Bus`, `Drive`]
+  },
+  {
+    name: `Add luggage`,
+    forTypes: [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Flight`]
+  },
+  {
+    name: `Switch to comfort class`,
+    forTypes: [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`, `Flight`]
+  },
+  {
+    name: `Add meal`,
+    forTypes: [`Train`, `Ship`, `Flight`]
+  },
+  {
+    name: `Choose seats`,
+    forTypes: [`Flight`, `Restaurant`]
+  },
+  {
+    name: `Travel by train`,
+    forTypes: [`Taxi`, `Bus`, `Transport`, `Drive`, `Flight`]
+  },
+  {
+    name: `Rent a car`,
+    forTypes: [`Taxi`, `Bus`, `Train`, `Ship`, `Transport`]
+  },
+  {
+    name: `Add breakfest`,
+    forTypes: [`Check-in`]
+  },
+  {
+    name: `Book Tickets`,
+    forTypes: [`Bus`, `Train`, `Ship`, `Flight`]
+  },
+  {
+    name: `Lunch in city`,
+    forTypes: [`Check-in`]
+  }
 ];
 
 export const ROUTE_POINT_DESCRIPTION_SENTENCES = [
