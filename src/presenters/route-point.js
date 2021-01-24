@@ -1,7 +1,7 @@
 import RoutePointView from '../view/route-point.js';
 import RoutePointEditFormView from '../view/editing-form.js';
 import {render, replace, remove, RenderPosition} from '../utils/render.js';
-import {UpdateType} from '../const.js';
+import {UpdateType, UserAction} from '../const.js';
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -22,6 +22,7 @@ export default class RoutePoint {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(routePoint) {
@@ -37,6 +38,7 @@ export default class RoutePoint {
     this._routePointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._routePointEditFormComponent.setRollupClickHandler(this._handleRollupClick);
     this._routePointEditFormComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._routePointEditFormComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevRoutePointComponent === null || prevRoutePointEditFormComponent === null) {
       render(this._routePointListComponent, this._routePointComponent, RenderPosition.BEFOREEND);
@@ -100,6 +102,14 @@ export default class RoutePoint {
             this._routePoint,
             {isFavorite: !this._routePoint.isFavorite}
         )
+    );
+  }
+
+  _handleDeleteClick(routePoint) {
+    this._changeData(
+        UserAction.DELETE_ROUTE_POINT,
+        UpdateType.MAJOR,
+        routePoint
     );
   }
 

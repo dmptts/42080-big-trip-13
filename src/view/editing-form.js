@@ -131,6 +131,7 @@ export default class RoutePointEditForm extends SmartView {
     this._typeCheckboxClicktHandler = this._typeCheckboxClicktHandler.bind(this);
     this._destinationInputChange = this._destinationInputChange.bind(this);
     this._rollupClickHandler = this._rollupClickHandler.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -155,6 +156,11 @@ export default class RoutePointEditForm extends SmartView {
     this._handlers.rollupClick();
   }
 
+  _deleteClickHandler(evt) {
+    evt.preventDefault();
+    this._handlers.deleteClick(RoutePointEditForm.parseDataToRoutePoint(this._data));
+  }
+
   setFormSubmitHandler(handler) {
     this._handlers.formSubmit = handler;
     this.getElem().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
@@ -163,6 +169,11 @@ export default class RoutePointEditForm extends SmartView {
   setRollupClickHandler(handler) {
     this._handlers.rollupClick = handler;
     this.getElem().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollupClickHandler);
+  }
+
+  setDeleteClickHandler(handler) {
+    this._handlers.deleteClick = handler;
+    this.getElem().querySelector(`.event__reset-btn`).addEventListener(`click`, this._deleteClickHandler);
   }
 
   _typeCheckboxClicktHandler(evt) {
@@ -204,6 +215,7 @@ export default class RoutePointEditForm extends SmartView {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._handlers.formSubmit);
+    this.setDeleteClickHandler(this._handlers.deleteClick);
   }
 
   static parseRoutePointToData(routePoint) {

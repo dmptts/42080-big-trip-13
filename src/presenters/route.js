@@ -7,7 +7,7 @@ import NoRoutePointView from '../view/no-route-point.js';
 import RoutePointPresenter from './route-point.js';
 import {remove, render, RenderPosition} from '../utils/render.js';
 import {filter} from "../utils/filter.js";
-import {UpdateType} from '../const.js';
+import {UpdateType, UserAction} from '../const.js';
 
 export default class Route {
   constructor(routeMainInfoContainer, routeEventsContainer, routePointsModel, filterModel) {
@@ -42,8 +42,15 @@ export default class Route {
     return filteredRoutePoints;
   }
 
-  _handleViewChange(updateType, update) {
-    this._routePointsModel.updateRoutePoint(updateType, update);
+  _handleViewChange(actionType, updateType, update) {
+    switch (actionType) {
+      case UserAction.UPDATE_ROUTE_POINT:
+        this._routePointsModel.updateRoutePoint(updateType, update);
+        break;
+      case UserAction.DELETE_ROUTE_POINT:
+        this._routePointsModel.deleteRoutePoint(updateType, update);
+        break;
+    }
   }
 
   _handleModelChange(updateType, data) {
@@ -58,7 +65,8 @@ export default class Route {
         this._renderRoute(false);
         break;
       case UpdateType.MAJOR:
-        // Обновить весь маршрут
+        this._clearRoute();
+        this._renderRoute(true);
         break;
     }
   }
@@ -137,5 +145,16 @@ export default class Route {
       .values(this._routePointPresenter)
       .forEach((presenter) => presenter.destroy());
     this._routePointPresenter = {};
+  }
+
+  _clearRoute() {
+    remove(this._menuComponent);
+    remove(this._routeInfoComponent);
+    remove(this._routePriceComponent);
+    remove(this._sortingComponent);
+    remove(this._routePointListComponent);
+    remove(this._noRoutePointComponent);
+
+    this._clearRoutePoints();
   }
 }

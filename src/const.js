@@ -65,6 +65,11 @@ export const UpdateType = {
   MAJOR: `MAJOR`
 };
 
+export const UserAction = {
+  UPDATE_ROUTE_POINT: `UPDATE_ROUTE_POINT`,
+  DELETE_ROUTE_POINT: `DELETE_ROUTE_POINT`
+};
+
 export const FilterType = {
   EVERYTHING: `everything`,
   FUTURE: `future`,
