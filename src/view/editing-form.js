@@ -4,8 +4,16 @@ import {getRandomInt} from '../utils/common.js';
 import {ROUTE_POINT_TYPES, ROUTE_POINT_DESTINATIONS} from '../const.js';
 import {getDescription, getOptions, getPhotos} from '../mock/route-point.js';
 
-const BLANK_ROUTE_POINT = {
-  // TODO: Добавить пустой шаблон задачи
+const getRoutePointDetailsTemplate = (options, description, photos) => {
+  return options.length !== 0 || description || photos.length !== 0 ? `<section class="event__details">
+    ${createRoutePointOffersTemplate(options)}
+
+    ${description || photos ? `<section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      ${description ? `<p class="event__destination-description">${description}</p>` : ``}
+      ${createRoutePointPhotosTemplate(photos)}
+    </section>` : ``}
+  </section>` : ``;
 };
 
 const createRoutePointTypeSelectorTemplate = (routePointType) => {
@@ -72,7 +80,7 @@ const createRoutePointPhotosTemplate = (routePointPhotos) => {
   </div>` : ``;
 };
 
-const createEditFormTemplate = (routePoint = {}) => {
+const createEditFormTemplate = (routePoint, isNewRoutePoint) => {
   const {type, destination, times, price, options, description, photos} = routePoint;
 
   return `<li class="trip-events__item">
@@ -104,28 +112,21 @@ const createEditFormTemplate = (routePoint = {}) => {
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button">
+        <button class="event__reset-btn" type="reset">${isNewRoutePoint ? `Cancel` : `Delete`}</button>
+        ${isNewRoutePoint ? `` : `<button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
-        </button>
+        </button>`}
       </header>
-      <section class="event__details">
-        ${createRoutePointOffersTemplate(options)}
-
-        ${description || photos ? `<section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          ${description ? `<p class="event__destination-description">${description}</p>` : ``}
-          ${createRoutePointPhotosTemplate(photos)}
-        </section>` : ``}
-      </section>
+      ${getRoutePointDetailsTemplate(options, description, photos)}
     </form>
   </li>`;
 };
 
 export default class RoutePointEditForm extends SmartView {
-  constructor(routePoint = BLANK_ROUTE_POINT) {
+  constructor(routePoint, isNewRoutePoint) {
     super();
     this._data = RoutePointEditForm.parseRoutePointToData(routePoint);
+    this._isNewRoutePoint = isNewRoutePoint;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._typeCheckboxClicktHandler = this._typeCheckboxClicktHandler.bind(this);
@@ -143,7 +144,7 @@ export default class RoutePointEditForm extends SmartView {
   }
 
   getTemplate() {
-    return createEditFormTemplate(this._data);
+    return createEditFormTemplate(this._data, this._isNewRoutePoint);
   }
 
   _formSubmitHandler(evt) {

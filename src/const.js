@@ -67,7 +67,8 @@ export const UpdateType = {
 
 export const UserAction = {
   UPDATE_ROUTE_POINT: `UPDATE_ROUTE_POINT`,
-  DELETE_ROUTE_POINT: `DELETE_ROUTE_POINT`
+  DELETE_ROUTE_POINT: `DELETE_ROUTE_POINT`,
+  ADD_ROUTE_POINT: `ADD_ROUTE_POINT`
 };
 
 export const FilterType = {

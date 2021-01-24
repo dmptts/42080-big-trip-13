@@ -5,9 +5,10 @@ import SortingFormView from '../view/sorting.js';
 import RoutePointListView from '../view/route-point-list.js';
 import NoRoutePointView from '../view/no-route-point.js';
 import RoutePointPresenter from './route-point.js';
+import NewRoutePointPresenter from './new-route-point.js';
 import {remove, render, RenderPosition} from '../utils/render.js';
 import {filter} from "../utils/filter.js";
-import {UpdateType, UserAction} from '../const.js';
+import {UpdateType, UserAction, FilterType} from '../const.js';
 
 export default class Route {
   constructor(routeMainInfoContainer, routeEventsContainer, routePointsModel, filterModel) {
@@ -28,10 +29,18 @@ export default class Route {
 
     this._routePointsModel.addObserver(this._handleModelChange);
     this._filterModel.addObserver(this._handleModelChange);
+
+    this._newRoutePointPresenter = new NewRoutePointPresenter(this._routePointListComponent, this._handleViewChange);
   }
 
   init() {
     this._renderRoute();
+  }
+
+  createRoutePoint() {
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+
+    this._newRoutePointPresenter.init();
   }
 
   _getRoutePoints() {
@@ -50,17 +59,17 @@ export default class Route {
       case UserAction.DELETE_ROUTE_POINT:
         this._routePointsModel.deleteRoutePoint(updateType, update);
         break;
+      case UserAction.ADD_ROUTE_POINT:
+        this._routePointsModel.addRoutePoint(updateType, update);
     }
   }
 
   _handleModelChange(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        // Обновить точку маршрута
         this._routePointPresenter[data.id].init(data);
         break;
       case UpdateType.MINOR:
-        // Обновить список точек маршрута
         this._clearRoutePoints();
         this._renderRoute(false);
         break;

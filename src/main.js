@@ -22,3 +22,8 @@ const filterPresenter = new FilterPresenter(routeMainInfoElement.querySelector(`
 routePresenter.init();
 filterPresenter.init();
 
+document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  routePresenter.createRoutePoint();
+});
+

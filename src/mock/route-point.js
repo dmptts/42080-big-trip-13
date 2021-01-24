@@ -2,7 +2,18 @@ import dayjs from 'dayjs';
 import {getRandomInt} from '../utils/common.js';
 import {ROUTE_POINT_TYPES, ROUTE_POINT_DESTINATIONS, ROUTE_POINT_OPTIONS, ROUTE_POINT_DESCRIPTION_SENTENCES, ROUTE_POINT_PHOTO_PLACEHOLDER} from '../const.js';
 
-const getId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+export const getId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
+export const BLANK_ROUTE_POINT = {
+  type: `Flight`,
+  destination: ``,
+  options: [],
+  description: ``,
+  photos: [],
+  times: {},
+  price: null,
+  isFavorite: false
+};
 
 export const getOptions = (type) => {
   const options = [];

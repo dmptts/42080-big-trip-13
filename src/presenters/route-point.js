@@ -96,6 +96,7 @@ export default class RoutePoint {
 
   _handleFavoriteClick() {
     this._changeData(
+        UserAction.UPDATE_ROUTE_POINT,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -122,7 +123,7 @@ export default class RoutePoint {
   }
 
   _handleFormSubmit(routePoint) {
-    this._changeData(UpdateType.MINOR, routePoint);
+    this._changeData(UpdateType.MAJOR, routePoint);
     this._replaceFormToCard();
   }
 }

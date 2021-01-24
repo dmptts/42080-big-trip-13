@@ -44,4 +44,13 @@ export default class RoutePoints extends Observer {
 
     this._notify(updateType);
   }
+
+  addRoutePoint(updateType, update) {
+    this._routePoints = [
+      update,
+      ...this._routePoints
+    ];
+
+    this._notify(updateType, update);
+  }
 }
