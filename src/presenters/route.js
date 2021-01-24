@@ -65,6 +65,8 @@ export default class Route {
   }
 
   _handleModelChange(updateType, data) {
+    this._newRoutePointPresenter.destroy();
+
     switch (updateType) {
       case UpdateType.PATCH:
         this._routePointPresenter[data.id].init(data);

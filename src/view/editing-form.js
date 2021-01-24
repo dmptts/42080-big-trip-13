@@ -130,9 +130,10 @@ export default class RoutePointEditForm extends SmartView {
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._typeCheckboxClicktHandler = this._typeCheckboxClicktHandler.bind(this);
-    this._destinationInputChange = this._destinationInputChange.bind(this);
+    this._destinationInputChangeHandler = this._destinationInputChangeHandler.bind(this);
     this._rollupClickHandler = this._rollupClickHandler.bind(this);
     this._deleteClickHandler = this._deleteClickHandler.bind(this);
+    this._priceInputChangeHandler = this._priceInputChangeHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -149,6 +150,24 @@ export default class RoutePointEditForm extends SmartView {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
+
+    const destinationInput = this.getElem().querySelector(`.event__input--destination`);
+    const priceInput = this.getElem().querySelector(`.event__input--price`);
+
+    if (ROUTE_POINT_DESTINATIONS.indexOf(destinationInput.value) === -1) {
+      destinationInput.setCustomValidity(`Указать можно только назначения из списка`);
+      return;
+    } else {
+      destinationInput.setCustomValidity(``);
+    }
+
+    if (priceInput.value !== `` && Number.isInteger(+priceInput.value)) {
+      priceInput.setCustomValidity(``);
+    } else {
+      priceInput.setCustomValidity(`Укажите целое число`);
+      return;
+    }
+
     this._handlers.formSubmit(RoutePointEditForm.parseDataToRoutePoint(this._data));
   }
 
@@ -194,23 +213,33 @@ export default class RoutePointEditForm extends SmartView {
     });
   }
 
-  _destinationInputChange(evt) {
+  _destinationInputChangeHandler(evt) {
     evt.preventDefault();
 
     if (ROUTE_POINT_DESTINATIONS.indexOf(evt.target.value) === -1) {
-      evt.target.value = ``;
-    }
+      evt.target.setCustomValidity(`Указать можно только назначения из списка`);
+    } else {
+      evt.target.setCustomValidity(``);
 
+      this.updateData({
+        destination: evt.target.value,
+        description: getDescription(),
+        photos: getPhotos()
+      });
+    }
+  }
+
+  _priceInputChangeHandler(evt) {
+    evt.preventDefault();
     this.updateData({
-      destination: evt.target.value,
-      description: getDescription(),
-      photos: getPhotos()
+      price: Number(evt.target.value)
     });
   }
 
   _setInnerHandlers() {
     this.getElem().querySelector(`.event__type-list`).addEventListener(`click`, this._typeCheckboxClicktHandler);
-    this.getElem().querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationInputChange);
+    this.getElem().querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationInputChangeHandler);
+    this.getElem().querySelector(`.event__input--price`).addEventListener(`change`, this._priceInputChangeHandler);
   }
 
   restoreHandlers() {
@@ -218,6 +247,12 @@ export default class RoutePointEditForm extends SmartView {
     this.setFormSubmitHandler(this._handlers.formSubmit);
     this.setDeleteClickHandler(this._handlers.deleteClick);
   }
+
+  // _validateDestinationInput() {
+  //   const destinationInput = this.getElem().querySelector(`.event__input--destination`);
+
+
+  // }
 
   static parseRoutePointToData(routePoint) {
     return Object.assign(
