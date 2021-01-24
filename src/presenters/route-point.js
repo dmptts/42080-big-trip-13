@@ -106,7 +106,7 @@ export default class RoutePoint {
   _escKeyDownHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
-      this._routePointEditFormComponent.reset(this._task);
+      this._routePointEditFormComponent.reset(this.routePoint);
       this._replaceFormToCard();
     }
   }

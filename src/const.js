@@ -60,6 +60,13 @@ export const ROUTE_POINT_DESCRIPTION_SENTENCES = [
 export const ROUTE_POINT_PHOTO_PLACEHOLDER = `http://picsum.photos/248/152?r=`;
 
 export const UpdateType = {
+  PATCH: `PATCH`,
   MINOR: `MINOR`,
   MAJOR: `MAJOR`
+};
+
+export const FilterType = {
+  EVERYTHING: `everything`,
+  FUTURE: `future`,
+  PAST: `past`
 };

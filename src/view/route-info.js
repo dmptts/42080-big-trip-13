@@ -23,7 +23,7 @@ const getDate = (routePoints) => {
 const createRouteInfoTemplate = (routePoints) => {
   const isRoutePoints = (routePoints.length !== 0);
 
-  routePoints.sort((a, b) => a.times.startTime - b.times.startTime);
+  routePoints = routePoints.slice().sort((a, b) => a.times.startTime - b.times.startTime);
 
   return `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
