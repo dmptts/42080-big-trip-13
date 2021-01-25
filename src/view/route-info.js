@@ -20,10 +20,10 @@ const getDate = (routePoints) => {
   return isSameMonth ? dayjs(routePoints[routePoints.length - 1].times.endTime).format(`DD`) : dayjs(routePoints[routePoints.length - 1].times.endTime).format(`MMM DD`);
 };
 
-const createRouteTemplate = (routePoints) => {
+const createRouteInfoTemplate = (routePoints) => {
   const isRoutePoints = (routePoints.length !== 0);
 
-  routePoints.sort((a, b) => a.times.startTime - b.times.startTime);
+  routePoints = routePoints.slice().sort((a, b) => a.times.startTime - b.times.startTime);
 
   return `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">
@@ -41,6 +41,6 @@ export default class Route extends Abstract {
   }
 
   getTemplate() {
-    return createRouteTemplate(this._routePoints);
+    return createRouteInfoTemplate(this._routePoints);
   }
 }

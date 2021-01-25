@@ -4,8 +4,16 @@ import {getRandomInt} from '../utils/common.js';
 import {ROUTE_POINT_TYPES, ROUTE_POINT_DESTINATIONS} from '../const.js';
 import {getDescription, getOptions, getPhotos} from '../mock/route-point.js';
 
-const BLANK_ROUTE_POINT = {
-  // TODO: Добавить пустой шаблон задачи
+const getRoutePointDetailsTemplate = (options, description, photos) => {
+  return options.length !== 0 || description || photos.length !== 0 ? `<section class="event__details">
+    ${createRoutePointOffersTemplate(options)}
+
+    ${description || photos ? `<section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      ${description ? `<p class="event__destination-description">${description}</p>` : ``}
+      ${createRoutePointPhotosTemplate(photos)}
+    </section>` : ``}
+  </section>` : ``;
 };
 
 const createRoutePointTypeSelectorTemplate = (routePointType) => {
@@ -72,7 +80,7 @@ const createRoutePointPhotosTemplate = (routePointPhotos) => {
   </div>` : ``;
 };
 
-const createEditFormTemplate = (routePoint = {}) => {
+const createEditFormTemplate = (routePoint, isNewRoutePoint) => {
   const {type, destination, times, price, options, description, photos} = routePoint;
 
   return `<li class="trip-events__item">
@@ -104,33 +112,28 @@ const createEditFormTemplate = (routePoint = {}) => {
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button">
+        <button class="event__reset-btn" type="reset">${isNewRoutePoint ? `Cancel` : `Delete`}</button>
+        ${isNewRoutePoint ? `` : `<button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
-        </button>
+        </button>`}
       </header>
-      <section class="event__details">
-        ${createRoutePointOffersTemplate(options)}
-
-        ${description || photos ? `<section class="event__section  event__section--destination">
-          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          ${description ? `<p class="event__destination-description">${description}</p>` : ``}
-          ${createRoutePointPhotosTemplate(photos)}
-        </section>` : ``}
-      </section>
+      ${getRoutePointDetailsTemplate(options, description, photos)}
     </form>
   </li>`;
 };
 
 export default class RoutePointEditForm extends SmartView {
-  constructor(routePoint = BLANK_ROUTE_POINT) {
+  constructor(routePoint, isNewRoutePoint) {
     super();
     this._data = RoutePointEditForm.parseRoutePointToData(routePoint);
+    this._isNewRoutePoint = isNewRoutePoint;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._typeCheckboxClicktHandler = this._typeCheckboxClicktHandler.bind(this);
-    this._destinationInputChange = this._destinationInputChange.bind(this);
+    this._destinationInputChangeHandler = this._destinationInputChangeHandler.bind(this);
     this._rollupClickHandler = this._rollupClickHandler.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
+    this._priceInputChangeHandler = this._priceInputChangeHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -142,17 +145,40 @@ export default class RoutePointEditForm extends SmartView {
   }
 
   getTemplate() {
-    return createEditFormTemplate(this._data);
+    return createEditFormTemplate(this._data, this._isNewRoutePoint);
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
+
+    const destinationInput = this.getElem().querySelector(`.event__input--destination`);
+    const priceInput = this.getElem().querySelector(`.event__input--price`);
+
+    if (ROUTE_POINT_DESTINATIONS.indexOf(destinationInput.value) === -1) {
+      destinationInput.setCustomValidity(`Указать можно только назначения из списка`);
+      return;
+    } else {
+      destinationInput.setCustomValidity(``);
+    }
+
+    if (priceInput.value !== `` && Number.isInteger(+priceInput.value)) {
+      priceInput.setCustomValidity(``);
+    } else {
+      priceInput.setCustomValidity(`Укажите целое число`);
+      return;
+    }
+
     this._handlers.formSubmit(RoutePointEditForm.parseDataToRoutePoint(this._data));
   }
 
   _rollupClickHandler(evt) {
     evt.preventDefault();
     this._handlers.rollupClick();
+  }
+
+  _deleteClickHandler(evt) {
+    evt.preventDefault();
+    this._handlers.deleteClick(RoutePointEditForm.parseDataToRoutePoint(this._data));
   }
 
   setFormSubmitHandler(handler) {
@@ -163,6 +189,11 @@ export default class RoutePointEditForm extends SmartView {
   setRollupClickHandler(handler) {
     this._handlers.rollupClick = handler;
     this.getElem().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._rollupClickHandler);
+  }
+
+  setDeleteClickHandler(handler) {
+    this._handlers.deleteClick = handler;
+    this.getElem().querySelector(`.event__reset-btn`).addEventListener(`click`, this._deleteClickHandler);
   }
 
   _typeCheckboxClicktHandler(evt) {
@@ -182,28 +213,39 @@ export default class RoutePointEditForm extends SmartView {
     });
   }
 
-  _destinationInputChange(evt) {
+  _destinationInputChangeHandler(evt) {
     evt.preventDefault();
 
     if (ROUTE_POINT_DESTINATIONS.indexOf(evt.target.value) === -1) {
-      evt.target.value = ``;
-    }
+      evt.target.setCustomValidity(`Указать можно только назначения из списка`);
+    } else {
+      evt.target.setCustomValidity(``);
 
+      this.updateData({
+        destination: evt.target.value,
+        description: getDescription(),
+        photos: getPhotos()
+      });
+    }
+  }
+
+  _priceInputChangeHandler(evt) {
+    evt.preventDefault();
     this.updateData({
-      destination: evt.target.value,
-      description: getDescription(),
-      photos: getPhotos()
+      price: Number(evt.target.value)
     });
   }
 
   _setInnerHandlers() {
     this.getElem().querySelector(`.event__type-list`).addEventListener(`click`, this._typeCheckboxClicktHandler);
-    this.getElem().querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationInputChange);
+    this.getElem().querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationInputChangeHandler);
+    this.getElem().querySelector(`.event__input--price`).addEventListener(`change`, this._priceInputChangeHandler);
   }
 
   restoreHandlers() {
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._handlers.formSubmit);
+    this.setDeleteClickHandler(this._handlers.deleteClick);
   }
 
   static parseRoutePointToData(routePoint) {

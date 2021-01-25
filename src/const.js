@@ -58,3 +58,27 @@ export const ROUTE_POINT_DESCRIPTION_SENTENCES = [
 ];
 
 export const ROUTE_POINT_PHOTO_PLACEHOLDER = `http://picsum.photos/248/152?r=`;
+
+export const UpdateType = {
+  PATCH: `PATCH`,
+  MINOR: `MINOR`,
+  MAJOR: `MAJOR`
+};
+
+export const UserAction = {
+  UPDATE_ROUTE_POINT: `UPDATE_ROUTE_POINT`,
+  DELETE_ROUTE_POINT: `DELETE_ROUTE_POINT`,
+  ADD_ROUTE_POINT: `ADD_ROUTE_POINT`
+};
+
+export const FilterType = {
+  EVERYTHING: `everything`,
+  FUTURE: `future`,
+  PAST: `past`
+};
+
+export const SortingType = {
+  DAY: `day`,
+  TIME: `time`,
+  PRICE: `price`,
+};
