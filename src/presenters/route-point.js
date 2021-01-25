@@ -20,6 +20,7 @@ export default class RoutePoint {
     this._handleRollupClick = this._handleRollupClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
   init(routePoint) {
@@ -33,6 +34,7 @@ export default class RoutePoint {
 
     this._routePointComponent.setRollupClickHandler(this._handleRollupClick);
     this._routePointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._routePointEditFormComponent.setRollupClickHandler(this._handleRollupClick);
     this._routePointEditFormComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     if (prevRoutePointComponent === null || prevRoutePointEditFormComponent === null) {
@@ -67,17 +69,26 @@ export default class RoutePoint {
 
   _replaceCardToForm() {
     replace(this._routePointEditFormComponent, this._routePointComponent);
+    document.addEventListener(`keydown`, this._escKeyDownHandler);
     this._changeMode();
     this._mode = Mode.EDITING;
   }
 
   _replaceFormToCard() {
     replace(this._routePointComponent, this._routePointEditFormComponent);
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
     this._mode = Mode.DEFAULT;
   }
 
   _handleRollupClick() {
-    this._replaceCardToForm();
+    if (this._mode === Mode.DEFAULT) {
+      this._replaceCardToForm();
+      return;
+    }
+
+    if (this._mode === Mode.EDITING) {
+      this._replaceFormToCard();
+    }
   }
 
   _handleFavoriteClick() {
@@ -88,6 +99,14 @@ export default class RoutePoint {
             {isFavorite: !this._routePoint.isFavorite}
         )
     );
+  }
+
+  _escKeyDownHandler(evt) {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      evt.preventDefault();
+      this._routePointEditFormComponent.reset(this._task);
+      this._replaceFormToCard();
+    }
   }
 
   _handleFormSubmit(routePoint) {

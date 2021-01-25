@@ -4,11 +4,10 @@ import FilterView from '../view/filter.js';
 import RoutePriceView from '../view/price.js';
 import SortingFormView from '../view/sorting.js';
 import RoutePointListView from '../view/route-point-list.js';
+import NoRoutePointView from '../view/no-route-point.js';
 import RoutePointPresenter from './route-point.js';
 import {updateItem} from '../utils/common.js';
 import {render, RenderPosition} from '../utils/render.js';
-
-const ROUTE_ITEM_COUNT = 15;
 
 export default class Route {
   constructor(routeMainInfoContainer, routeEventsContainer) {
@@ -20,6 +19,7 @@ export default class Route {
     this._filterComponent = new FilterView();
     this._sortingComponent = new SortingFormView();
     this._routePointListComponent = new RoutePointListView();
+    this._noTaskComponent = new NoRoutePointView();
 
     this._handleRoutePointChange = this._handleRoutePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -30,6 +30,12 @@ export default class Route {
 
     this._renderRouteMainInfo(this._routePoints);
     this._renderSorting();
+
+    if (this._routePoints.length === 0) {
+      this._renderNoRoutePoint();
+      return;
+    }
+
     this._renderRoutePointList(this._routePoints);
   }
 
@@ -72,9 +78,13 @@ export default class Route {
   _renderRoutePointList(routePoints) {
     render(this._routeEventsContainer, this._routePointListComponent, RenderPosition.BEFOREEND);
 
-    for (let i = 0; i < ROUTE_ITEM_COUNT; i++) {
+    for (let i = 0; i < this._routePoints.length; i++) {
       this._renderRoutePoint(routePoints[i]);
     }
+  }
+
+  _renderNoRoutePoint() {
+    render(this._routeEventsContainer, this._noTaskComponent, RenderPosition.BEFOREEND);
   }
 
   _renderSorting() {
