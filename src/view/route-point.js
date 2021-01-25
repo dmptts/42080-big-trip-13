@@ -47,9 +47,9 @@ const createRoutePointTemplate = (routePoint) => {
       <h3 class="event__title">${type} ${destination}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="${dayjs(times.startTime).format(`YYYY-MM-DDThh:mm`)}">${dayjs(times.startTime).format(`hh:mm`)}</time>
+          <time class="event__start-time" datetime="${dayjs(times.startTime).format(`YYYY-MM-DDTHH:mm`)}">${dayjs(times.startTime).format(`HH:mm`)}</time>
           &mdash;
-          <time class="event__end-time" datetime="${dayjs(times.endTime).format(`YYYY-MM-DDThh:mm`)}">${dayjs(times.endTime).format(`hh:mm`)}</time>
+          <time class="event__end-time" datetime="${dayjs(times.endTime).format(`YYYY-MM-DDTHH:mm`)}">${dayjs(times.endTime).format(`HH:mm`)}</time>
         </p>
         <p class="event__duration">${getDuration(times)}</p>
       </div>

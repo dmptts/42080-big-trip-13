@@ -8,7 +8,8 @@ import RoutePointPresenter from './route-point.js';
 import NewRoutePointPresenter from './new-route-point.js';
 import {remove, render, RenderPosition} from '../utils/render.js';
 import {filter} from "../utils/filter.js";
-import {UpdateType, UserAction, FilterType} from '../const.js';
+import {UpdateType, UserAction, FilterType, SortingType} from '../const.js';
+import dayjs from 'dayjs';
 
 export default class Route {
   constructor(routeMainInfoContainer, routeEventsContainer, routePointsModel, filterModel) {
@@ -17,15 +18,18 @@ export default class Route {
     this._routePointPresenter = {};
     this._routePointsModel = routePointsModel;
     this._filterModel = filterModel;
+    this._currentSortingType = SortingType.DAY;
+
+    this._sortingComponent = null;
 
     this._menuComponent = new MenuView();
-    this._sortingComponent = new SortingFormView();
     this._routePointListComponent = new RoutePointListView();
     this._noRoutePointComponent = new NoRoutePointView();
 
     this._handleViewChange = this._handleViewChange.bind(this);
     this._handleModelChange = this._handleModelChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortingTypeChange = this._handleSortingTypeChange.bind(this);
 
     this._routePointsModel.addObserver(this._handleModelChange);
     this._filterModel.addObserver(this._handleModelChange);
@@ -38,6 +42,7 @@ export default class Route {
   }
 
   createRoutePoint() {
+    this._currentSortingType = SortingType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
 
     this._newRoutePointPresenter.init();
@@ -47,6 +52,21 @@ export default class Route {
     const filterType = this._filterModel.getFilter();
     const routePoints = this._routePointsModel.getRoutePoints();
     const filteredRoutePoints = filter[filterType](routePoints);
+
+    switch (this._currentSortingType) {
+      case SortingType.DAY:
+        return filteredRoutePoints.sort((routePointA, routePointB) => {
+          return dayjs(routePointA.times.startTime) - dayjs(routePointB.times.startTime);
+        });
+      case SortingType.TIME:
+        return filteredRoutePoints.sort((routePointA, routePointB) => {
+          return (dayjs(routePointB.times.endTime) - dayjs(routePointB.times.startTime)) - (dayjs(routePointA.times.endTime) - dayjs(routePointA.times.startTime));
+        });
+      case SortingType.PRICE:
+        return filteredRoutePoints.sort((routePointA, routePointB) => {
+          return routePointB.price - routePointA.price;
+        });
+    }
 
     return filteredRoutePoints;
   }
@@ -86,6 +106,16 @@ export default class Route {
     Object
       .values(this._routePointPresenter)
       .forEach((presenter) => presenter.resetView());
+  }
+
+  _handleSortingTypeChange(sortingType) {
+    if (this._currentSortingType === sortingType) {
+      return;
+    }
+
+    this._currentSortingType = sortingType;
+    this._clearRoutePoints();
+    this._renderRoute(false);
   }
 
   _renderRoute(updateRouteMainInfo = true) {
@@ -134,6 +164,12 @@ export default class Route {
   }
 
   _renderSorting() {
+    if (this._sortingComponent !== null) {
+      this._sortingComponent = null;
+    }
+
+    this._sortingComponent = new SortingFormView(this._currentSortingType);
+    this._sortingComponent.setSortingTypeChangeHandler(this._handleSortingTypeChange);
     render(this._routeEventsContainer, this._sortingComponent, RenderPosition.BEFOREEND);
   }
 

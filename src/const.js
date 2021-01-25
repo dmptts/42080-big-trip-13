@@ -76,3 +76,9 @@ export const FilterType = {
   FUTURE: `future`,
   PAST: `past`
 };
+
+export const SortingType = {
+  DAY: `day`,
+  TIME: `time`,
+  PRICE: `price`,
+};
