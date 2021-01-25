@@ -248,12 +248,6 @@ export default class RoutePointEditForm extends SmartView {
     this.setDeleteClickHandler(this._handlers.deleteClick);
   }
 
-  // _validateDestinationInput() {
-  //   const destinationInput = this.getElem().querySelector(`.event__input--destination`);
-
-
-  // }
-
   static parseRoutePointToData(routePoint) {
     return Object.assign(
         {},
