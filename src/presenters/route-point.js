@@ -123,7 +123,7 @@ export default class RoutePoint {
   }
 
   _handleFormSubmit(routePoint) {
-    this._changeData(UpdateType.MAJOR, routePoint);
+    this._changeData(UserAction.UPDATE_ROUTE_POINT, UpdateType.MAJOR, routePoint);
     this._replaceFormToCard();
   }
 }
