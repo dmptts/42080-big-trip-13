@@ -1,8 +1,11 @@
 import dayjs from 'dayjs';
+import flatpickr from 'flatpickr';
 import SmartView from './smart.js';
 import {getRandomInt} from '../utils/common.js';
 import {ROUTE_POINT_TYPES, ROUTE_POINT_DESTINATIONS} from '../const.js';
 import {getDescription, getOptions, getPhotos} from '../mock/route-point.js';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const getRoutePointDetailsTemplate = (options, description, photos) => {
   return options.length !== 0 || description || photos.length !== 0 ? `<section class="event__details">
@@ -97,10 +100,10 @@ const createEditFormTemplate = (routePoint, isNewRoutePoint) => {
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${times ? dayjs(times.startTime).format(`DD/MM/YY hh:mm`) : ``}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${times ? dayjs(times.startTime).format(`DD/MM/YY HH:mm`) : ``}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${times ? dayjs(times.endTime).format(`DD/MM/YY hh:mm`) : ``}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${times ? dayjs(times.endTime).format(`DD/MM/YY HH:mm`) : ``}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -126,6 +129,7 @@ export default class RoutePointEditForm extends SmartView {
   constructor(routePoint, isNewRoutePoint) {
     super();
     this._data = RoutePointEditForm.parseRoutePointToData(routePoint);
+    this._datepicker = null;
     this._isNewRoutePoint = isNewRoutePoint;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
@@ -134,6 +138,10 @@ export default class RoutePointEditForm extends SmartView {
     this._rollupClickHandler = this._rollupClickHandler.bind(this);
     this._deleteClickHandler = this._deleteClickHandler.bind(this);
     this._priceInputChangeHandler = this._priceInputChangeHandler.bind(this);
+    this._startTimeChangeHandler = this._startTimeChangeHandler.bind(this);
+    this._endTimeChangeHandler = this._endTimeChangeHandler.bind(this);
+    this._startTimeFocusHandler = this._startTimeFocusHandler.bind(this);
+    this._endTimeFocusHandler = this._endTimeFocusHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -236,10 +244,74 @@ export default class RoutePointEditForm extends SmartView {
     });
   }
 
+  _startTimeFocusHandler(evt) {
+    evt.preventDefault();
+    this._setStartDatepicker();
+  }
+
+  _startTimeChangeHandler([userDate]) {
+    this.updateData({
+      times: {
+        startTime: userDate,
+        endTime: this._data.times.endTime
+      }
+    });
+  }
+
+  _endTimeFocusHandler(evt) {
+    evt.preventDefault();
+    this._setEndDatepicker();
+  }
+
+  _endTimeChangeHandler(userDate) {
+    this.updateData({
+      times: {
+        startTime: this._data.times.startTime,
+        endTime: dayjs(userDate)
+      }
+    });
+  }
+
   _setInnerHandlers() {
     this.getElem().querySelector(`.event__type-list`).addEventListener(`click`, this._typeCheckboxClicktHandler);
     this.getElem().querySelector(`.event__input--destination`).addEventListener(`change`, this._destinationInputChangeHandler);
     this.getElem().querySelector(`.event__input--price`).addEventListener(`change`, this._priceInputChangeHandler);
+    this.getElem().querySelector(`input[name="event-start-time"]`).addEventListener(`focus`, this._startTimeFocusHandler);
+    this.getElem().querySelector(`input[name="event-end-time"]`).addEventListener(`focus`, this._endTimeFocusHandler);
+  }
+
+  _setStartDatepicker() {
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    this._datepicker = flatpickr(
+        this.getElem().querySelector(`input[name="event-start-time"]`),
+        {
+          enableTime: true,
+          dateFormat: `d/m/y H:i`,
+          defaultDate: this._data.times.startTime,
+          onChange: this._startTimeChangeHandler
+        }
+    );
+  }
+
+  _setEndDatepicker() {
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    this._datepicker = flatpickr(
+        this.getElem().querySelector(`input[name="event-end-time"]`),
+        {
+          enableTime: true,
+          dateFormat: `d/m/y H:i`,
+          defaultDate: this._data.times.endTime,
+          onChange: this._endTimeChangeHandler
+        }
+    );
   }
 
   restoreHandlers() {
