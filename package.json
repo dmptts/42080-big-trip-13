@@ -33,6 +33,8 @@
   },
   "homepage": "https://github.com/dmptts/42080-big-trip-13#readme",
   "dependencies": {
+    "chart.js": "^2.9.4",
+    "chartjs-plugin-datalabels": "^0.7.0",
     "dayjs": "^1.9.5",
     "flatpickr": "^4.6.6",
     "webpack-dev-server": "^3.11.0"
