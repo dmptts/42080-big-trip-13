@@ -4,6 +4,7 @@ import RoutePriceView from '../view/price.js';
 import SortingFormView from '../view/sorting.js';
 import RoutePointListView from '../view/route-point-list.js';
 import NoRoutePointView from '../view/no-route-point.js';
+import StatsView from '../view/stats.js';
 import RoutePointPresenter from './route-point.js';
 import NewRoutePointPresenter from './new-route-point.js';
 import {remove, render, RenderPosition} from '../utils/render.js';
@@ -12,8 +13,9 @@ import {UpdateType, UserAction, FilterType, SortingType} from '../const.js';
 import dayjs from 'dayjs';
 
 export default class Route {
-  constructor(routeMainInfoContainer, routeEventsContainer, routePointsModel, filterModel) {
+  constructor(routeMainInfoContainer, routeMainContentContainer, routeEventsContainer, routePointsModel, filterModel) {
     this._routeMainInfoContainer = routeMainInfoContainer;
+    this._routeMainContentContainer = routeMainContentContainer;
     this._routeEventsContainer = routeEventsContainer;
     this._routePointPresenter = {};
     this._routePointsModel = routePointsModel;
@@ -21,6 +23,7 @@ export default class Route {
     this._currentSortingType = SortingType.DAY;
 
     this._sortingComponent = null;
+    this._statsComponent = null;
 
     this._menuComponent = new MenuView();
     this._routePointListComponent = new RoutePointListView();
@@ -30,6 +33,7 @@ export default class Route {
     this._handleModelChange = this._handleModelChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortingTypeChange = this._handleSortingTypeChange.bind(this);
+    this._handleMenuClick = this._handleMenuClick.bind(this);
 
     this._routePointsModel.addObserver(this._handleModelChange);
     this._filterModel.addObserver(this._handleModelChange);
@@ -42,6 +46,10 @@ export default class Route {
   }
 
   createRoutePoint() {
+    if (this._statsComponent !== null) {
+      remove(this._statsComponent);
+    }
+
     this._currentSortingType = SortingType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
 
@@ -102,6 +110,23 @@ export default class Route {
     }
   }
 
+  _handleMenuClick(menuItem) {
+    switch (menuItem) {
+      case `Table`:
+        remove(this._statsComponent);
+        this._renderSorting();
+        this._renderRoutePointList();
+        this._renderRoutePoints(this._getRoutePoints());
+        break;
+      case `Stats`:
+        this._clearRoutePoints();
+        remove(this._sortingComponent);
+        remove(this._routePointListComponent);
+        this._renderStats();
+        break;
+    }
+  }
+
   _handleModeChange() {
     Object
       .values(this._routePointPresenter)
@@ -152,6 +177,7 @@ export default class Route {
   }
 
   _renderMenu() {
+    this._menuComponent.setMenuClickHandler(this._handleMenuClick);
     render(this._routeMainInfoContainer.querySelector(`h2:first-child`), this._menuComponent, RenderPosition.AFTER);
   }
 
@@ -183,6 +209,12 @@ export default class Route {
     const routePointPresenter = new RoutePointPresenter(this._routePointListComponent, this._handleViewChange, this._handleModeChange);
     routePointPresenter.init(routePoint);
     this._routePointPresenter[routePoint.id] = routePointPresenter;
+  }
+
+  _renderStats() {
+    this._statsComponent = new StatsView(this._getRoutePoints());
+
+    render(this._routeMainContentContainer, this._statsComponent, RenderPosition.BEFOREEND);
   }
 
   _clearRoutePoints() {

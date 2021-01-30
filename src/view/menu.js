@@ -8,7 +8,30 @@ const createMenuTemplate = () => {
 };
 
 export default class Menu extends Abstract {
+  constructor() {
+    super();
+
+    this._menuClickHandler = this._menuClickHandler.bind(this);
+  }
+
   getTemplate() {
     return createMenuTemplate();
+  }
+
+  _menuClickHandler(evt) {
+    evt.preventDefault();
+
+    if (evt.target.classList.contains(`trip-tabs__btn--active`)) {
+      return;
+    }
+
+    this.getElem().querySelector(`.trip-tabs__btn--active`).classList.remove(`trip-tabs__btn--active`);
+    evt.target.classList.add(`trip-tabs__btn--active`);
+    this._handlers.menuClick(evt.target.textContent);
+  }
+
+  setMenuClickHandler(handler) {
+    this._handlers.menuClick = handler;
+    this.getElem().addEventListener(`click`, this._menuClickHandler);
   }
 }
